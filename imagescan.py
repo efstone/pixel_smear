@@ -3,57 +3,60 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 import numpy as np
 
+class ImageApp:
+    def __init__(self, root):
+        self.root = root
+        self.setup_ui()
+        self.img = None  # This will hold the PIL Image object
 
-def open_image():
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        img = Image.open(file_path)
-        img.thumbnail((left_pane.winfo_width(), left_pane.winfo_height()))
-        photo = ImageTk.PhotoImage(img)
-        canvas.image = photo  # keep a reference!
-        canvas.create_image(0, 0, anchor='nw', image=photo)
+    def setup_ui(self):
+        self.root.geometry("800x600")  # Adjust size to be about 50% of a common desktop
 
+        top_frame = tk.Frame(self.root)
+        top_frame.pack(side='top', fill='x')
 
-def track_mouse(event):
-    x, y = event.x, event.y
-    if 0 <= x < canvas.image.width() and 0 <= y < canvas.image.height():
-        img = canvas.image._PhotoImage__photo  # Access the PhotoImage object.
-        pixels = list(img.getdata(band=0))
-        width, height = img.width(), img.height()
-        pixels = np.array(pixels).reshape((height, width))
+        open_image_btn = tk.Button(top_frame, text="Open image", command=self.open_image)
+        open_image_btn.pack(side='left')
 
-        right_canvas.delete("all")  # Clear previous lines
-        for i, pixel in enumerate(pixels[:, x]):
-            color = f'#{pixel:02x}{pixel:02x}{pixel:02x}'
-            right_canvas.create_line(0, i, right_canvas.winfo_width(), i, fill=color)
+        for _ in range(3):  # Create a few blank buttons
+            tk.Button(top_frame, text=" ").pack(side='left', padx=2)
 
+        bottom_pane = tk.PanedWindow(self.root, orient='horizontal')
+        bottom_pane.pack(fill='both', expand=True)
 
-app = tk.Tk()
-app.geometry("800x600")  # Adjust size to be about 50% of a common desktop
+        self.left_pane = tk.Frame(bottom_pane)
+        bottom_pane.add(self.left_pane)
 
-top_frame = tk.Frame(app)
-top_frame.pack(side='top', fill='x')
+        self.right_pane = tk.Frame(bottom_pane)
+        bottom_pane.add(self.right_pane)
 
-open_image_btn = tk.Button(top_frame, text="Open image", command=open_image)
-open_image_btn.pack(side='left')
+        self.canvas = tk.Canvas(self.left_pane, bg='grey')
+        self.canvas.pack(fill='both', expand=True)
 
-for _ in range(3):  # Create a few blank buttons
-    tk.Button(top_frame, text=" ").pack(side='left', padx=2)
+        self.right_canvas = tk.Canvas(self.right_pane, bg='white')
+        self.right_canvas.pack(fill='both', expand=True)
+        self.canvas.bind("<Motion>", self.track_mouse)
 
-bottom_pane = tk.PanedWindow(app, orient='horizontal')
-bottom_pane.pack(fill='both', expand=True)
+    def open_image(self):
+        file_path = filedialog.askopenfilename()
+        if file_path:
+            self.img = Image.open(file_path)
+            self.img.thumbnail((self.left_pane.winfo_width(), self.left_pane.winfo_height()))
+            photo = ImageTk.PhotoImage(self.img)
+            self.canvas.image = photo  # keep a reference!
+            self.canvas.create_image(0, 0, anchor='nw', image=photo)
 
-left_pane = tk.Frame(bottom_pane)
-bottom_pane.add(left_pane)
+    def track_mouse(self, event):
+        if self.img:
+            x, y = event.x, event.y
+            if 0 <= x < self.img.width and 0 <= y < self.img.height:
+                pixels = np.array(self.img.convert('RGB'))
+                self.right_canvas.delete("all")  # Clear previous lines
+                for i, pixel in enumerate(pixels[:, x]):
+                    color = f'#{pixel[0]:02x}{pixel[1]:02x}{pixel[2]:02x}'
+                    self.right_canvas.create_line(0, i, self.right_canvas.winfo_width(), i, fill=color)
 
-right_pane = tk.Frame(bottom_pane)
-bottom_pane.add(right_pane)
-
-canvas = tk.Canvas(left_pane, bg='grey')
-canvas.pack(fill='both', expand=True)
-canvas.bind("<Motion>", track_mouse)
-
-right_canvas = tk.Canvas(right_pane, bg='white')
-right_canvas.pack(fill='both', expand=True)
-
-app.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ImageApp(root)
+    root.mainloop()
