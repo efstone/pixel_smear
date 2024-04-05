@@ -3,6 +3,7 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 import numpy as np
 
+
 class ImageApp:
     def __init__(self, root):
         self.root = root
@@ -18,8 +19,8 @@ class ImageApp:
         open_image_btn = tk.Button(top_frame, text="Open image", command=self.open_image)
         open_image_btn.pack(side='left')
 
-        for _ in range(3):  # Create a few blank buttons
-            tk.Button(top_frame, text=" ").pack(side='left', padx=2)
+        # for _ in range(3):  # Create a few blank buttons
+        #     tk.Button(top_frame, text=" ").pack(side='left', padx=2)
 
         bottom_pane = tk.PanedWindow(self.root, orient='horizontal')
         bottom_pane.pack(fill='both', expand=True)
@@ -33,7 +34,7 @@ class ImageApp:
         self.canvas = tk.Canvas(self.left_pane, bg='grey')
         self.canvas.pack(fill='both', expand=True)
 
-        self.right_canvas = tk.Canvas(self.right_pane, bg='white')
+        self.right_canvas = tk.Canvas(self.right_pane, bg='black')
         self.right_canvas.pack(fill='both', expand=True)
         self.canvas.bind("<Motion>", self.track_mouse)
 
@@ -55,6 +56,7 @@ class ImageApp:
                 for i, pixel in enumerate(pixels[:, x]):
                     color = f'#{pixel[0]:02x}{pixel[1]:02x}{pixel[2]:02x}'
                     self.right_canvas.create_line(0, i, self.right_canvas.winfo_width(), i, fill=color)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
