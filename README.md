@@ -5,4 +5,6 @@ I got the idea when I saw a printing error one time. A large inkjet printer begi
 
 Here's [a link](https://chat.openai.com/share/7ba4f982-fbbe-4553-adb5-5a1744154c72) to the prompt and output.
 
-![pixel smear example](/pixel%20smear%20example%202.png)
+![pixel smear in motion](/pixel%20smear%20in%20motion%20.gif)
+
+![pixel smear still](/pixel%20smear%20example%202.png)
