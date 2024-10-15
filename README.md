@@ -9,3 +9,5 @@ Here's [a link](https://chat.openai.com/share/7ba4f982-fbbe-4553-adb5-5a1744154c
 ![pixel smear in motion local](/pixel%20smear%20in%20motion.gif)
 
 ![pixel smear still](/pixel%20smear%20example%202.png)
+
+![pixel smear in WIRED magazine](/WIRED%20pixel%20smear.jpeg)
